@@ -1,0 +1,104 @@
+﻿<Window x:Class="Lab4.Views.EditDailyMenuView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lab4.Views"
+        mc:Ignorable="d"
+        Title="EditDailyMenuView" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок та вибір дня -->
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Редагування меню" 
+                       FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+            <ComboBox ItemsSource="{Binding DaysOfWeek}"
+                      SelectedItem="{Binding SelectedDayName}"
+                      DisplayMemberPath="."
+                      Margin="0,0,0,10"
+                      Width="200"
+                      HorizontalAlignment="Left"/>
+        </StackPanel>
+
+        <!-- Списки страв -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Доступні страви -->
+            <GroupBox Header="Доступні страви" Grid.Column="0">
+                <ListView ItemsSource="{Binding AllAvailableDishes}"
+                         
+                          SelectionMode="Single"
+                          SelectedItem="{Binding SelectedToAdd}"
+                          BorderThickness="0">
+                    
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="5" BorderBrush="#EEE" BorderThickness="0,0,0,1">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Category, Converter={StaticResource CategoryConverter}}"
+                                                   Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding Price, StringFormat={}{0} грн}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </GroupBox>
+
+            <!-- Кнопки переміщення -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <Button Content="Додати →" 
+                        Command="{Binding AddDishesCommand}"
+                        Margin="5" Padding="10,5"/>
+                <Button Content="← Видалити" 
+                        Command="{Binding RemoveDishesCommand}"
+                        Margin="5" Padding="10,5"/>
+            </StackPanel>
+
+            <!-- Вибрані страви для меню -->
+            <GroupBox Header="Страви в меню" Grid.Column="2">
+                <ListView ItemsSource="{Binding SelectedDay.Dishes}"
+                          SelectedItem="{Binding SelectedToRemove}"
+                          SelectionMode="Single"
+                          BorderThickness="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="5" BorderBrush="#EEE" BorderThickness="0,0,0,1">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Category, Converter={StaticResource CategoryConverter}}"
+                                                   Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding Price, StringFormat={}{0} грн}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </GroupBox>
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            
+            <Button Content="Зберегти" 
+                    Command="{Binding SaveChangesCommand}"
+                    Width="100" Height="35"
+                    Style="{StaticResource PrimaryButtonStyle}"/>
+        </StackPanel>
+    </Grid>
+</Window>
