@@ -14,19 +14,19 @@ namespace BusinessLogic.Models
 
         public int TotalCost { get; private set; }
 
-        private ObservableCollection<BaseMenuItem> _dishes = new();
-        public ObservableCollection<BaseMenuItem> dishes
+        private ObservableCollection<BaseMenuItemBusinessModel> _dishes = new();
+        public ObservableCollection<BaseMenuItemBusinessModel> dishes
         {
             get => _dishes;
         }
 
 
-        public void AddDish(BaseMenuItem dish)
+        public void AddDish(BaseMenuItemBusinessModel dish)
         {
             _dishes.Add(dish);
             UpdateTotalCost();
         }
-        public void RemoveDish(BaseMenuItem dish)
+        public void RemoveDish(BaseMenuItemBusinessModel dish)
         {
             _dishes.Remove(dish);
             UpdateTotalCost();

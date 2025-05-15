@@ -12,6 +12,6 @@ namespace BusinessLogic.Models
     {
         public int DayID { get; set; }
         public string DayOfWeek { get; set; }
-        public ObservableCollection<BaseMenuItem> Dishes { get; set; }
+        public ObservableCollection<BaseMenuItemBusinessModel> Dishes { get; set; }
     }
 }
