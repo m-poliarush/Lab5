@@ -13,7 +13,9 @@ namespace BusinessLogic.Profiles
     {
         public BaseMenuItemProfile()
         {
-            CreateMap<BaseMenuItem, BaseMenuItemBusinessModel>();
+            CreateMap<BaseMenuItem, BaseMenuItemBusinessModel>()
+            .Include<Dish, DishBusinessModel>()
+            .Include<ComplexDish, ComplexDishBusinessModel>();
             CreateMap<BaseMenuItemBusinessModel, BaseMenuItem>();
         }
     }

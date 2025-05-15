@@ -13,8 +13,11 @@ namespace BusinessLogic.Profiles
     {
         public ComplexDishProfile()
         {
-            CreateMap<ComplexDish, ComplexDishBusinessModel>();
-            CreateMap<ComplexDishBusinessModel, ComplexDish>();
+            CreateMap<ComplexDish, ComplexDishBusinessModel>()
+       .ForMember(dest => dest.DishList, opt => opt.MapFrom(src => src.DishList));
+
+            CreateMap<ComplexDishBusinessModel, ComplexDish>()
+                .ForMember(dest => dest.DishList, opt => opt.MapFrom(src => src.DishList));
         }
     }
 }
