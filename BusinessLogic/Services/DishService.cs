@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using BusinessLogic.Models;
+using BusinessLogic.Services.Interfaces;
 using DomainData.UoW;
 using MenuManager.DB.Models;
 
 namespace BusinessLogic.Services
 {
-    public class DishService
+    public class DishService : IDishService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -20,64 +21,114 @@ namespace BusinessLogic.Services
             List<BaseMenuItemBusinessModel> result = new List<BaseMenuItemBusinessModel>();
 
             var dishes = _unitOfWork.DishRepository.GetAll();
-            var complexDishes = _unitOfWork.ComplexDishRepository.GetAll(d => d.DishList);
 
             foreach (var dish in dishes)
             {
                 result.Add(_mapper.Map<DishBusinessModel>(dish));
             }
 
+
+
+            return result;
+        }
+        public List<BaseMenuItemBusinessModel> GetAllComplexDishes()
+        {
+            List<BaseMenuItemBusinessModel> result = new List<BaseMenuItemBusinessModel>();
+
+            var complexDishes = _unitOfWork.ComplexDishRepository.GetAll(d => d.DishList);
             foreach (var complexDish in complexDishes)
             {
                 result.Add(_mapper.Map<ComplexDishBusinessModel>(complexDish));
             }
-
             return result;
         }
-        public void CreateDish(BaseMenuItemBusinessModel dish)
+        public List<BaseMenuItemBusinessModel> GetAllDishesAndComplexDishes()
         {
-            var baseMenuItemEntity = _mapper.Map<BaseMenuItem>(dish);
+            List<BaseMenuItemBusinessModel> result = new List<BaseMenuItemBusinessModel>
+                (GetAllDishes().Concat(GetAllComplexDishes()));
+            return result;
+        }
+        public int CreateDish(BaseMenuItemBusinessModel dish)
+        {
+            int id = -1;
 
-            if(baseMenuItemEntity is Dish d)
+            if (dish is DishBusinessModel dModel)
             {
-                _unitOfWork.DishRepository.Create(d);
+                var dishEntity = _mapper.Map<Dish>(dModel);
+                _unitOfWork.DishRepository.Create(dishEntity);
+                _unitOfWork.Save();
+                id = dishEntity.ID;
             }
-            else if(baseMenuItemEntity is ComplexDish cd)
+            else if (dish is ComplexDishBusinessModel cdModel)
             {
-                _unitOfWork.ComplexDishRepository.Create(cd);
+                var complexDishEntity = _mapper.Map<ComplexDish>(cdModel);
+                var originalDishList = cdModel.DishList;
+
+                // Очищуємо DishList перед збереженням
+                complexDishEntity.DishList = new List<Dish>();
+
+                _unitOfWork.ComplexDishRepository.Create(complexDishEntity);
+                _unitOfWork.Save(); // Отримуємо ID ComplexDish
+
+                // Додаємо вже відстежувані Dish з контексту до ComplexDish
+                ComplexDishMap(ref complexDishEntity, originalDishList);
+
+                _unitOfWork.Save();
+
+                id = complexDishEntity.ID;
+            }
+
+            return id;
+        }
+        public void ComplexDishMap(ref ComplexDish complexDishEntity, List<DishBusinessModel> dishList)
+        {
+            foreach (var dishModel in dishList)
+            {
+                var trackedDish = _unitOfWork.DishRepository.GetTrackedOrAttach(dishModel.ID);
+                if (trackedDish != null)
+                {
+                    complexDishEntity.DishList.Add(trackedDish);
+                }
             }
         }
         public void DeleteDish(int id)
         {
             BaseMenuItem dish = _unitOfWork.DishRepository.GetById(id);
 
-            if(dish == null)
+            if (dish == null)
             {
                 dish = _unitOfWork.ComplexDishRepository.GetById(id);
             }
 
-            if(dish is ComplexDish)
+            if (dish is ComplexDish)
             {
                 _unitOfWork.ComplexDishRepository.Delete(id);
             }
 
-            else if(dish is Dish)
+            else if (dish is Dish)
             {
                 _unitOfWork.DishRepository.Delete(id);
             }
-            
+            _unitOfWork.Save();
+
         }
         public void UpdateDish(BaseMenuItemBusinessModel dish)
         {
-            if(dish is DishBusinessModel)
+
+            if (dish is DishBusinessModel)
             {
-                var dishEntity = _mapper.Map<Dish>(dish);
-                _unitOfWork.DishRepository.Update(dishEntity);
+                
+                var entityToUpdate = _unitOfWork.DishRepository.GetTrackedOrAttach(dish.ID);
+                entityToUpdate = _mapper.Map<Dish>(dish);
+                _unitOfWork.DishRepository.Update(entityToUpdate);
             }
-            else if(dish is ComplexDishBusinessModel)
+            else if (dish is ComplexDishBusinessModel cd)
             {
-                var complexDishEntity = _mapper.Map<ComplexDish>(dish);
-                _unitOfWork.ComplexDishRepository.Update(complexDishEntity);
+                var dishList = cd.DishList;
+                var entityToUpdate = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(cd.ID);
+                entityToUpdate = _mapper.Map<ComplexDish>(dish);
+                ComplexDishMap(ref entityToUpdate, dishList);
+                _unitOfWork.ComplexDishRepository.Update(entityToUpdate);
             }
             _unitOfWork.Save();
         }

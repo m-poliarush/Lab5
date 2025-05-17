@@ -29,23 +29,31 @@ namespace BusinessLogic.Services
             
             var result = _mapper.Map<List<DailyMenuBusinessModel>>(menus);
 
-            foreach (var menu in result)
-            {
-                foreach (var dish in menu.Dishes.OfType<ComplexDishBusinessModel>())
-                {
-                    var complexDish = complexDishes.FirstOrDefault(cd => cd.ID == dish.ID);
-                    if (complexDish != null)
-                    {
-                        dish.DishList = _mapper.Map<List<DishBusinessModel>>(complexDish.DishList);
-                    }
-                }
-            }
+            
 
             return result;
         }
         public void UpdateMenu(DailyMenuBusinessModel menu)
         {
-            var menuEntity = _mapper.Map<DailyMenu>(menu);
+            var originalDishlist = menu.Dishes;
+            var menuEntity = _unitOfWork.MenusRepository.GetTrackedOrAttach(menu.DayID, m => m.Dishes);
+            menuEntity.Dishes.Clear();
+            foreach (var dish in originalDishlist)
+            {
+                if(dish is DishBusinessModel)
+                {
+                    var dishEntity = _unitOfWork.DishRepository.GetTrackedOrAttach(dish.ID);
+                    menuEntity.Dishes.Add(dishEntity);
+                }
+                else if(dish is ComplexDishBusinessModel cd)
+                {
+                    var complexDishEntity = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(cd.ID);
+                    menuEntity.Dishes.Add(complexDishEntity);
+
+                }
+
+            }
+            
 
             _unitOfWork.MenusRepository.Update(menuEntity);
             _unitOfWork.Save();

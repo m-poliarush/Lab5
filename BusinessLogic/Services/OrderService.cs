@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BusinessLogic.Models;
+using BusinessLogic.Services.Interfaces;
 using DomainData.UoW;
 using MenuManager.DB.Models;
 
 namespace BusinessLogic.Services
 {
-    public class OrderService
+    public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -35,6 +36,27 @@ namespace BusinessLogic.Services
         public void CreateOrder(OrderBusinessModel order)
         {
             var orderEntity = _mapper.Map<Order>(order);
+            orderEntity.dishes.Clear();
+
+            foreach (var dishModel in order.dishes)
+            {
+                BaseMenuItem dishEntity;
+
+                if (dishModel is DishBusinessModel)
+                {
+                    dishEntity = _unitOfWork.DishRepository.GetTrackedOrAttach(dishModel.ID);
+                }
+                else if (dishModel is ComplexDishBusinessModel)
+                {
+                    dishEntity = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(dishModel.ID);
+                }
+                else
+                {
+                    continue;
+                }
+
+                orderEntity.dishes.Add(dishEntity);
+            }
 
             _unitOfWork.OrdersRepository.Create(orderEntity);
             _unitOfWork.Save();
