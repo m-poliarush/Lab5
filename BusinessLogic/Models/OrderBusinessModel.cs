@@ -37,7 +37,6 @@ namespace BusinessLogic.Models
             UpdateTotalCost();
         }
 
-        // Оновлення вартості замовлення
         private void UpdateTotalCost()
         {
             TotalCost = _dishes.Sum(dish => dish.Price);

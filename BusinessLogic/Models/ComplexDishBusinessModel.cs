@@ -9,7 +9,7 @@ namespace BusinessLogic.Models
 {
     public class ComplexDishBusinessModel : BaseMenuItemBusinessModel
     {
-        public List<DishBusinessModel> DishList { get; set; }
+        public List<DishBusinessModel> DishList { get; set; } = new();
         public void AddDish(DishBusinessModel dish)
         {
             if (dish != null)
