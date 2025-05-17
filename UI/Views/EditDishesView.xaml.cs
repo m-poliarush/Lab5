@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BusinessLogic.Services.Interfaces;
+using DomainData.UoW;
 using Lab4.ViewModels;
 using MenuManager.DB;
 
@@ -22,10 +24,10 @@ namespace Lab4.Views
     /// </summary>
     public partial class EditDishesView : Window
     {
-        public EditDishesView(MenuContext context)
+        public EditDishesView(IDishService service)
         {
             InitializeComponent();
-            DataContext = new EditDishesViewModel(context);
+            DataContext = new EditDishesViewModel(service);
         }
 
        

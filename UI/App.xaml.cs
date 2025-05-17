@@ -1,6 +1,5 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+
 
 namespace Lab4
 {
@@ -9,6 +8,7 @@ namespace Lab4
     /// </summary>
     public partial class App : Application
     {
+        
     }
 
 }

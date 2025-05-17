@@ -11,7 +11,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BusinessLogic.Profiles;
+using BusinessLogic.Services.Interfaces;
+using BusinessLogic.Services;
+using DomainData.UoW;
 using Lab4.ViewModels;
+using MenuManager.DB;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lab4.Views
 {
@@ -20,10 +27,39 @@ namespace Lab4.Views
     /// </summary>
     public partial class MainView : Window
     {
+
+        public IServiceProvider serviceProvider { get; private set; }
+
         public MainView()
         {
+            var services = new ServiceCollection();
+
+            // Регистрация DbContext
+            services.AddScoped<MenuContext>();
+
+            // Регистрация AutoMapper
+            services.AddAutoMapper(typeof(DailyMenuProfile).Assembly);
+
+            // Регистрация сервисов
+            services.AddScoped<IDailyMenuService, DailyMenuService>();
+            services.AddScoped<IDishService, DishService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Регистрация ViewModel
+            services.AddScoped<MainViewModel>(); // Основная ViewModel для главного окна
+
+            // Построение провайдера сервисов
+            serviceProvider = services.BuildServiceProvider();
+
+            // Создание и отображение главного окна
+            DataContext = serviceProvider.GetRequiredService<MainViewModel>();
+
             InitializeComponent();
-            DataContext = new MainViewModel();
+
+
+            // Настройка DI
+            
         }
     }
 }

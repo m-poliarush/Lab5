@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BusinessLogic.Services.Interfaces;
 using Lab4.ViewModels;
 using MenuManager.DB;
 
@@ -21,10 +22,10 @@ namespace Lab4.Views
     /// </summary>
     public partial class CreateComplexMenuView : Window
     {
-        public CreateComplexMenuView(MenuContext context)
+        public CreateComplexMenuView(IDishService service)
         {
             InitializeComponent();
-            DataContext = new CreateComplexMenuViewModel(context);
+            DataContext = new CreateComplexMenuViewModel(service);
         }
     }
 }

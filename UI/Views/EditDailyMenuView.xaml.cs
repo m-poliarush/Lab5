@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BusinessLogic.Services.Interfaces;
 using Lab4.ViewModels;
 using MenuManager.DB;
 
@@ -21,10 +22,10 @@ namespace Lab4.Views
     /// </summary>
     public partial class EditDailyMenuView : Window
     {
-        public EditDailyMenuView(MenuContext context)
+        public EditDailyMenuView(IDishService dishService, IDailyMenuService dailyMenuService)
         {
             InitializeComponent();
-            DataContext = new EditDailyMenuViewModel(context);
+            DataContext = new EditDailyMenuViewModel(dailyMenuService, dishService);
         }
     }
 }

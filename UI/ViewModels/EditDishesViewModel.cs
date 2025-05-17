@@ -1,29 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MenuManager.DB;
+﻿using System.Collections.ObjectModel;
 using MenuManager.DB.Models;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using MenuManager.Repository.DishesRepository;
 using System.Windows.Input;
-using System.Printing;
 using Lab4.Commands;
 using Lab4.Views;
-using System.Text.RegularExpressions;
+using BusinessLogic.Services.Interfaces;
+using BusinessLogic.Models;
 
 namespace Lab4.ViewModels
 {
     public class EditDishesViewModel : BaseViewModel
     {
-        
-        private MenuContext context;
-        private DishesRepository dishesRepository;
-        public ObservableCollection<BaseMenuItem> dishes { get; set; }
-        private BaseMenuItem _selectedDish;
-        public BaseMenuItem SelectedDish
+
+        private readonly IDishService _dishService;
+        public ObservableCollection<BaseMenuItemBusinessModel> dishes { get; set; }
+        private BaseMenuItemBusinessModel _selectedDish;
+        public BaseMenuItemBusinessModel SelectedDish
         {
             get
             {
@@ -39,10 +30,9 @@ namespace Lab4.ViewModels
         public ICommand AddDishCommand { get; }
         public ICommand CreateComplexDishCommand { get; }
         public ICommand DeleteDishCommand { get; }
-        public EditDishesViewModel(MenuContext context)
+        public EditDishesViewModel(IDishService service)
         {
-            this.context = context;
-            dishesRepository = new DishesRepository(context);
+            _dishService = service;
             UpdateDishes();
             SaveChangesCommand = new RelayCommand(SaveChangesExecute, CanSaveChangesExecute);
             AddDishCommand = new RelayCommand(AddDishExecute, CanSaveChangesExecute);
@@ -55,7 +45,7 @@ namespace Lab4.ViewModels
             try
             {
                 int.Parse(SelectedDish.Price.ToString());
-                dishesRepository.UpdateDish(SelectedDish);
+                _dishService.UpdateDish(SelectedDish);
             }
             catch { }
             
@@ -67,28 +57,27 @@ namespace Lab4.ViewModels
         }
         private void AddDishExecute(object obj)
         {
-            BaseMenuItem dish = new Dish() { Category = DishCategory.Main, Description = "Опис страви", Name = "Назва Страви", Price = 999 };
-            dishesRepository.InsertDish(dish);
-            
-            
+            BaseMenuItemBusinessModel dish = new DishBusinessModel() { Category = DishCategory.Main, Description = "Опис страви", Name = "Назва Страви", Price = 999 };
+            var createdDishID = _dishService.CreateDish(dish);
             UpdateDishes();
             OnPropertyChanged(nameof(dishes));
-            SelectedDish = dish;
+            SelectedDish = dishes.First(d => d.ID == createdDishID);
 
         }
         private void CreateComplexDishExecute(object obj)
         {
-            var window = new CreateComplexMenuView(context);
+            var window = new CreateComplexMenuView(_dishService);
             window.Show();
             window.Focus();
         }
         private void UpdateDishes()
         {
-            dishes = new(dishesRepository.GetDishes().Concat(dishesRepository.GetComplexDishes()));
+            dishes = new(_dishService.GetAllDishesAndComplexDishes());
+            OnPropertyChanged(nameof(dishes));
         }
         private void DeleteDishExecute(object obj)
         {
-            dishesRepository.DeleteDish(SelectedDish.ID);
+            _dishService.DeleteDish(SelectedDish.ID);
             UpdateDishes();
             OnPropertyChanged(nameof(dishes));
         }

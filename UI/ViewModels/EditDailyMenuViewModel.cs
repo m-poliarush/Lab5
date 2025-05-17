@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BusinessLogic.Models;
+using BusinessLogic.Services.Interfaces;
 using Lab4.Commands;
 using MenuManager.DB;
 using MenuManager.DB.Models;
@@ -16,13 +18,13 @@ namespace Lab4.ViewModels
 {
     public class EditDailyMenuViewModel : BaseViewModel
     {
-        DishesRepository dishesRepository;
-        DailyMenusRepository menusRepository;
-        private List<BaseMenuItem> AllDishes;
-        public List<BaseMenuItem> AllAvailableDishes { get; set; }
-        public BaseMenuItem SelectedToAdd { get; set; }
-        public BaseMenuItem SelectedToRemove { get; set; }
-        private DailyMenu _originalMenu;
+        private readonly IDishService _dishService;
+        private readonly IDailyMenuService _dailyMenuService;
+        private List<BaseMenuItemBusinessModel> AllDishes;
+        public List<BaseMenuItemBusinessModel> AllAvailableDishes { get; set; }
+        public BaseMenuItemBusinessModel SelectedToAdd { get; set; }
+        public BaseMenuItemBusinessModel SelectedToRemove { get; set; }
+        public DailyMenuBusinessModel SelectedDay { get; set; }
         public IEnumerable<string> DaysOfWeek { get; set; }
 
         public ICommand AddDishesCommand { get; }
@@ -36,19 +38,19 @@ namespace Lab4.ViewModels
             set
             {
                 _SelectedDayName = value;
-                SelectedDay = menusRepository.GetMenu().FirstOrDefault(x => x.DayOfWeek == value);
-                AllDishes = new(dishesRepository.GetDishes().Concat(dishesRepository.GetComplexDishes()));
-                AllAvailableDishes = AllDishes.Except(SelectedDay.Dishes).ToList();
+                SelectedDay = _dailyMenuService.GetAllMenus().FirstOrDefault(menu => menu.DayOfWeek == _SelectedDayName);
+                AllDishes = new(_dishService.GetAllDishesAndComplexDishes());
+                AllAvailableDishes = AllDishes.Where(d => SelectedDay.Dishes.All(sd => sd.ID != d.ID)).ToList();
                 OnPropertyChanged(nameof(AllAvailableDishes));
                 OnPropertyChanged(nameof(SelectedDay));
             }
         }
-        public DailyMenu SelectedDay { get; set; }
-        public EditDailyMenuViewModel(MenuContext context)
+        
+        public EditDailyMenuViewModel(IDailyMenuService dailyMenuService, IDishService dishService)
         {
-            dishesRepository = new(context);
-            menusRepository = new(context);
-            DaysOfWeek = menusRepository.GetMenu().Select(x => x.DayOfWeek).ToList();
+            _dailyMenuService = dailyMenuService;
+            _dishService = dishService;
+            DaysOfWeek = _dailyMenuService.GetAllMenus().Select(x => x.DayOfWeek).ToList();
             AddDishesCommand = new RelayCommand(AddDishExecute, (object obj) => true);
             RemoveDishesCommand = new RelayCommand(RemoveDishExecute, (object obj) => true);
             SaveChangesCommand = new RelayCommand(SaveChangesExecute, (object obj) => true);
@@ -60,7 +62,7 @@ namespace Lab4.ViewModels
             {
                 SelectedDay.Dishes.Add(SelectedToAdd);
             }
-            AllAvailableDishes = AllDishes.Except(SelectedDay.Dishes).ToList();
+            AllAvailableDishes = AllDishes.Where(d => SelectedDay.Dishes.All(sd => sd.ID != d.ID)).ToList();
             OnPropertyChanged(nameof(AllAvailableDishes));
             OnPropertyChanged(nameof(SelectedDay));
         }
@@ -70,15 +72,15 @@ namespace Lab4.ViewModels
             {
                 SelectedDay.Dishes.Remove(SelectedToRemove);
             }
-            AllAvailableDishes = AllDishes.Except(SelectedDay.Dishes).ToList();
+            AllAvailableDishes = AllDishes.Where(d => SelectedDay.Dishes.All(sd => sd.ID != d.ID)).ToList();
             OnPropertyChanged(nameof(AllAvailableDishes));
             OnPropertyChanged(nameof(SelectedDay));
 
         }
         private void SaveChangesExecute(object obj)
         {
-            if(SelectedDay != null)
-            menusRepository.UpdateMenu(SelectedDay);
+            if (SelectedDay != null)
+                _dailyMenuService.UpdateMenu(SelectedDay);
         }
     }
 }

@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Markup;
+using BusinessLogic;
+using BusinessLogic.Models;
+using BusinessLogic.Profiles;
+using BusinessLogic.Services;
+using BusinessLogic.Services.Interfaces;
+using DomainData.UoW;
 using Lab4.Commands;
 using Lab4.Views;
 using MenuManager.DB;
 using MenuManager.DB.Models;
 using MenuManager.Repository.DailyMenusRepository;
 using MenuManager.Repository.OrdersRepository;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Lab4.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        private MenuContext context;
-        private DailyMenusRepository menusRepository;
-        private OrdersRepository ordersRepository;
+        private readonly IDishService _dishService;
+        private readonly IDailyMenuService _dailyMenuService;
+        private readonly IOrderService _orderService;
 
-        public Order CurrentOrder { get; set; }
+        public OrderBusinessModel CurrentOrder { get; set; }
 
         public ICommand SelectDayCommand { get; }
         public ICommand AddToOrderCommand { get; }
@@ -46,7 +46,7 @@ namespace Lab4.ViewModels
             }
         }
 
-        public IEnumerable<BaseMenuItem> FilteredDishes
+        public IEnumerable<BaseMenuItemBusinessModel> FilteredDishes
         {
             get
             {
@@ -75,13 +75,17 @@ namespace Lab4.ViewModels
                 OnPropertyChanged(nameof(SelectedDay));
             }
         }
-        public MainViewModel() {
-            context = new MenuContext();
-            menusRepository = new DailyMenusRepository(context);
-            ordersRepository = new OrdersRepository(context);
+        public MainViewModel(IDailyMenuService dailyMenuService, IOrderService orderService, IDishService dishService) {
+            
+            _dailyMenuService = dailyMenuService;
+            _orderService = orderService;
+            _dishService = dishService;
+
             CultureInfo ua = new CultureInfo("uk-UA");
             string s = DateTime.Today.ToString("dddd", ua);
+            
             LoadMenuForDate(s);            
+            
             SelectDayCommand = new RelayCommand(SelectDayCommandExecute, CanSelectDauCommandExecute);
             AddToOrderCommand = new RelayCommand(AddToOrderExecute, CanAddToOrderExecute);
             DeleteFromOrderCommand = new RelayCommand(DeleteFromOrderExecute, CanDeleteFromOrderExecute);
@@ -91,17 +95,17 @@ namespace Lab4.ViewModels
             ResetCategoryFilterCommand = new RelayCommand(ResetCategoryFilterExecute, CanDeleteFromOrderExecute);
             OpenDailyMenuEditCommand = new RelayCommand(OpenDailyMenuEditExecute, (object obj) => true);
 
-            CurrentOrder = new Order();
+            CurrentOrder = new OrderBusinessModel();
         }
 
-        public ObservableCollection<BaseMenuItem> TodayDishes { get; private set; } = new ObservableCollection<BaseMenuItem>();
+        public ObservableCollection<BaseMenuItemBusinessModel> TodayDishes { get; private set; } = new ObservableCollection<BaseMenuItemBusinessModel>();
 
         
         private void LoadMenuForDate(string day)
         {
             TodayDishes.Clear();
 
-            var menu = menusRepository.GetMenu();
+            var menu = _dailyMenuService.GetAllMenus(); 
             var dailyMenu = menu?.FirstOrDefault(x => x.DayOfWeek.ToLower() == day);
 
             if (dailyMenu?.Dishes != null)
@@ -116,7 +120,7 @@ namespace Lab4.ViewModels
 
         private void AddToOrderExecute(object obj)
         {
-            if(obj is BaseMenuItem dish)
+            if(obj is BaseMenuItemBusinessModel dish)
             {
                 CurrentOrder.AddDish(dish);
                 OnPropertyChanged(nameof(CurrentOrder));
@@ -124,7 +128,7 @@ namespace Lab4.ViewModels
         }
         private bool CanAddToOrderExecute(object obj)
         {
-            if (obj is BaseMenuItem dish)
+            if (obj is BaseMenuItemBusinessModel dish)
             {
                 if (CurrentOrder.dishes.Contains(dish))
                 {
@@ -152,7 +156,7 @@ namespace Lab4.ViewModels
         }
         private void DeleteFromOrderExecute(object obj)
         {
-            if(obj is BaseMenuItem dish)
+            if(obj is BaseMenuItemBusinessModel dish)
             {
                 CurrentOrder.RemoveDish(dish);
                 OnPropertyChanged(nameof(CurrentOrder));
@@ -167,10 +171,10 @@ namespace Lab4.ViewModels
         {
             if(CurrentOrder.dishes.Count != 0)
             {
-                ordersRepository.InsertOrder(CurrentOrder);
+                _orderService.CreateOrder(CurrentOrder);
             }
             CurrentOrder = null;
-            CurrentOrder = new Order();
+            CurrentOrder = new OrderBusinessModel();
             OnPropertyChanged(nameof(CurrentOrder));
             
         }
@@ -181,13 +185,13 @@ namespace Lab4.ViewModels
         }
         private void OpenDishesEditExecute(object obj)
         {
-            var newWindow = new EditDishesView(context);
+            var newWindow = new EditDishesView(_dishService);
             newWindow.Show();
             newWindow.Focus();
         }
         private void OpenOrdersEditExecute(object obj)
         {
-            var newWindow = new EditOrdersView(context);
+            var newWindow = new EditOrdersView(_orderService);
             newWindow.Show();
             newWindow.Focus();
         }
@@ -197,7 +201,7 @@ namespace Lab4.ViewModels
         }
         private void OpenDailyMenuEditExecute(object obj)
         {
-            var newWindow = new EditDailyMenuView(context);
+            var newWindow = new EditDailyMenuView(_dishService, _dailyMenuService);
             newWindow.Show();
             newWindow.Focus();
         }
