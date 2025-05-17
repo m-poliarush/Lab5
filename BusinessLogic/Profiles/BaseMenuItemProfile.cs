@@ -16,7 +16,11 @@ namespace BusinessLogic.Profiles
             CreateMap<BaseMenuItem, BaseMenuItemBusinessModel>()
             .Include<Dish, DishBusinessModel>()
             .Include<ComplexDish, ComplexDishBusinessModel>();
-            CreateMap<BaseMenuItemBusinessModel, BaseMenuItem>();
+            CreateMap<BaseMenuItemBusinessModel, BaseMenuItem>()
+                .Include<DishBusinessModel, Dish>()
+                .ForMember(dest => dest.ID, opt => opt.Condition(src => src.ID != 0))
+                .Include<ComplexDishBusinessModel, ComplexDish>()
+                .ForMember(dest => dest.ID, opt => opt.Condition(src => src.ID != 0));
         }
     }
 }
