@@ -14,15 +14,15 @@ namespace DomainData.UoW
         private bool disposedValue;
 
         private readonly MenuContext menuContext;
-        private GenericRepository<DailyMenu> _menusRepository;
-        private GenericRepository<Dish> _dishRepository;
-        private GenericRepository<ComplexDish> _complexDishRepository;
-        private GenericRepository<Order> _ordersRepository;
+        private IGenericRepository<DailyMenu> _menusRepository;
+        private IGenericRepository<Dish> _dishRepository;
+        private IGenericRepository<ComplexDish> _complexDishRepository;
+        private IGenericRepository<Order> _ordersRepository;
 
-        public GenericRepository<DailyMenu> MenusRepository => _menusRepository ??= new GenericRepository<DailyMenu>(menuContext);
-        public GenericRepository<Dish> DishRepository => _dishRepository ??= new GenericRepository<Dish>(menuContext);
-        public GenericRepository<ComplexDish> ComplexDishRepository => _complexDishRepository ??= new GenericRepository<ComplexDish>(menuContext);
-        public GenericRepository<Order> OrdersRepository => _ordersRepository ??= new GenericRepository<Order>(menuContext);
+        public IGenericRepository<DailyMenu> MenusRepository => _menusRepository ??= new GenericRepository<DailyMenu>(menuContext);
+        public IGenericRepository<Dish> DishRepository => _dishRepository ??= new GenericRepository<Dish>(menuContext);
+        public IGenericRepository<ComplexDish> ComplexDishRepository => _complexDishRepository ??= new GenericRepository<ComplexDish>(menuContext);
+        public IGenericRepository<Order> OrdersRepository => _ordersRepository ??= new GenericRepository<Order>(menuContext);
 
 
         public UnitOfWork(MenuContext context)

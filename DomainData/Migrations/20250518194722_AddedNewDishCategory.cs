@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace MenuManager.Migrations
+namespace DomainData.Migrations
 {
     /// <inheritdoc />
-    public partial class newMigration2 : Migration
+    public partial class AddedNewDishCategory : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

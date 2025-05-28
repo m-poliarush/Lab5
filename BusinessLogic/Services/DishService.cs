@@ -27,8 +27,6 @@ namespace BusinessLogic.Services
                 result.Add(_mapper.Map<DishBusinessModel>(dish));
             }
 
-
-
             return result;
         }
         public List<BaseMenuItemBusinessModel> GetAllComplexDishes()
@@ -64,14 +62,12 @@ namespace BusinessLogic.Services
                 var complexDishEntity = _mapper.Map<ComplexDish>(cdModel);
                 var originalDishList = cdModel.DishList;
 
-                // Очищуємо DishList перед збереженням
                 complexDishEntity.DishList = new List<Dish>();
 
                 _unitOfWork.ComplexDishRepository.Create(complexDishEntity);
-                _unitOfWork.Save(); // Отримуємо ID ComplexDish
+                _unitOfWork.Save();
 
-                // Додаємо вже відстежувані Dish з контексту до ComplexDish
-                ComplexDishMap(ref complexDishEntity, originalDishList);
+                ComplexDishMap(complexDishEntity, originalDishList);
 
                 _unitOfWork.Save();
 
@@ -80,8 +76,9 @@ namespace BusinessLogic.Services
 
             return id;
         }
-        public void ComplexDishMap(ref ComplexDish complexDishEntity, List<DishBusinessModel> dishList)
+        public void ComplexDishMap(ComplexDish complexDishEntity, List<DishBusinessModel> dishList)
         {
+            complexDishEntity.DishList.Clear();
             foreach (var dishModel in dishList)
             {
                 var trackedDish = _unitOfWork.DishRepository.GetTrackedOrAttach(dishModel.ID);
@@ -125,9 +122,10 @@ namespace BusinessLogic.Services
             else if (dish is ComplexDishBusinessModel cd)
             {
                 var dishList = cd.DishList;
-                var entityToUpdate = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(cd.ID);
+                var entityToUpdate = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(cd.ID, cd => cd.DishList);
                 entityToUpdate = _mapper.Map<ComplexDish>(dish);
-                ComplexDishMap(ref entityToUpdate, dishList);
+                entityToUpdate.DishList = new();
+                ComplexDishMap(entityToUpdate, dishList);
                 _unitOfWork.ComplexDishRepository.Update(entityToUpdate);
             }
             _unitOfWork.Save();

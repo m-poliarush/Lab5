@@ -24,7 +24,11 @@ namespace MenuManager.DB
                 .HasDiscriminator<string>("ItemType")
                 .HasValue<Dish>("Dish")
                 .HasValue<ComplexDish>("ComplexDish");
-            
+            modelBuilder.Entity<DailyMenu>()
+        .HasMany(dm => dm.Dishes)
+        .WithMany(bmi => bmi.menus)
+        .UsingEntity(j => j.ToTable("BaseMenuItemDailyMenu"));
+
 
             base.OnModelCreating(modelBuilder);
         }

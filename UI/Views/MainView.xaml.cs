@@ -34,31 +34,23 @@ namespace Lab4.Views
         {
             var services = new ServiceCollection();
 
-            // Регистрация DbContext
             services.AddScoped<MenuContext>();
 
-            // Регистрация AutoMapper
             services.AddAutoMapper(typeof(DailyMenuProfile).Assembly);
 
-            // Регистрация сервисов
             services.AddScoped<IDailyMenuService, DailyMenuService>();
             services.AddScoped<IDishService, DishService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // Регистрация ViewModel
-            services.AddScoped<MainViewModel>(); // Основная ViewModel для главного окна
+            services.AddScoped<MainViewModel>();
 
-            // Построение провайдера сервисов
             serviceProvider = services.BuildServiceProvider();
 
-            // Создание и отображение главного окна
             DataContext = serviceProvider.GetRequiredService<MainViewModel>();
 
             InitializeComponent();
 
-
-            // Настройка DI
             
         }
     }

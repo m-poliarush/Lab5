@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO.Packaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using BusinessLogic.Models;
 using BusinessLogic.Services.Interfaces;
 using Lab4.Commands;
-using MenuManager.DB;
-using MenuManager.DB.Models;
-using MenuManager.Repository.DailyMenusRepository;
-using MenuManager.Repository.DishesRepository;
+
 
 namespace Lab4.ViewModels
 {
@@ -81,6 +71,7 @@ namespace Lab4.ViewModels
         {
             if (SelectedDay != null)
                 _dailyMenuService.UpdateMenu(SelectedDay);
+            OnPropertyChanged(nameof(MainViewModel.SelectedDay));
         }
     }
 }

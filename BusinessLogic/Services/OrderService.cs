@@ -36,7 +36,7 @@ namespace BusinessLogic.Services
         public void CreateOrder(OrderBusinessModel order)
         {
             var orderEntity = _mapper.Map<Order>(order);
-            orderEntity.dishes.Clear();
+            
 
             foreach (var dishModel in order.dishes)
             {
@@ -54,7 +54,7 @@ namespace BusinessLogic.Services
                 {
                     continue;
                 }
-
+                
                 orderEntity.dishes.Add(dishEntity);
             }
 

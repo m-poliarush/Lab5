@@ -24,6 +24,7 @@ namespace Lab4.ViewModels
         private readonly IOrderService _orderService;
 
         public OrderBusinessModel CurrentOrder { get; set; }
+        public ObservableCollection<BaseMenuItemBusinessModel> OrderDishes { get; set; } = new();
 
         public ICommand SelectDayCommand { get; }
         public ICommand AddToOrderCommand { get; }
@@ -123,7 +124,9 @@ namespace Lab4.ViewModels
             if(obj is BaseMenuItemBusinessModel dish)
             {
                 CurrentOrder.AddDish(dish);
+                OrderDishes.Add(dish);
                 OnPropertyChanged(nameof(CurrentOrder));
+  
             }
         }
         private bool CanAddToOrderExecute(object obj)
@@ -159,6 +162,7 @@ namespace Lab4.ViewModels
             if(obj is BaseMenuItemBusinessModel dish)
             {
                 CurrentOrder.RemoveDish(dish);
+                OrderDishes.Remove(dish);
                 OnPropertyChanged(nameof(CurrentOrder));
                 
             }
@@ -174,6 +178,7 @@ namespace Lab4.ViewModels
                 _orderService.CreateOrder(CurrentOrder);
             }
             CurrentOrder = null;
+            OrderDishes = null;
             CurrentOrder = new OrderBusinessModel();
             OnPropertyChanged(nameof(CurrentOrder));
             

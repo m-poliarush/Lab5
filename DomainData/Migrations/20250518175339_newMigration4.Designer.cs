@@ -8,11 +8,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MenuManager.Migrations
+namespace DomainData.Migrations
 {
     [DbContext(typeof(MenuContext))]
-    [Migration("20250514185937_postgres")]
-    partial class postgres
+    [Migration("20250518175339_newMigration4")]
+    partial class newMigration4
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,7 @@ namespace MenuManager.Migrations
 
                     b.HasIndex("menusDayID");
 
-                    b.ToTable("BaseMenuItemDailyMenu");
+                    b.ToTable("BaseMenuItemDailyMenu", (string)null);
                 });
 
             modelBuilder.Entity("BaseMenuItemOrder", b =>

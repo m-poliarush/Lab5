@@ -4,43 +4,48 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MenuManager.Migrations
+namespace DomainData.Migrations
 {
     [DbContext(typeof(MenuContext))]
-    [Migration("20250401105511_newMigration2")]
-    partial class newMigration2
+    [Migration("20250518194722_AddedNewDishCategory")]
+    partial class AddedNewDishCategory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.3");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.16")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("BaseMenuItemDailyMenu", b =>
                 {
                     b.Property<int>("DishesID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<int>("menusDayID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("DishesID", "menusDayID");
 
                     b.HasIndex("menusDayID");
 
-                    b.ToTable("BaseMenuItemDailyMenu");
+                    b.ToTable("BaseMenuItemDailyMenu", (string)null);
                 });
 
             modelBuilder.Entity("BaseMenuItemOrder", b =>
                 {
                     b.Property<int>("dishesID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<int>("ordersOrderID")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("dishesID", "ordersOrderID");
 
@@ -49,27 +54,47 @@ namespace MenuManager.Migrations
                     b.ToTable("BaseMenuItemOrder");
                 });
 
+            modelBuilder.Entity("ComplexDishDish", b =>
+                {
+                    b.Property<int>("DishListID")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("complexDishesID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("DishListID", "complexDishesID");
+
+                    b.HasIndex("complexDishesID");
+
+                    b.ToTable("ComplexDishDish");
+                });
+
             modelBuilder.Entity("MenuManager.DB.Models.BaseMenuItem", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ItemType")
                         .IsRequired()
                         .HasMaxLength(13)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(13)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<int>("Price")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("ID");
 
@@ -84,11 +109,13 @@ namespace MenuManager.Migrations
                 {
                     b.Property<int>("DayID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DayID"));
 
                     b.Property<string>("DayOfWeek")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("DayID");
 
@@ -99,10 +126,12 @@ namespace MenuManager.Migrations
                 {
                     b.Property<int>("OrderID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderID"));
 
                     b.Property<int>("TotalCost")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("OrderID");
 
@@ -113,22 +142,12 @@ namespace MenuManager.Migrations
                 {
                     b.HasBaseType("MenuManager.DB.Models.BaseMenuItem");
 
-                    b.Property<int?>("BaseMenuItemID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("BaseMenuItemID");
-
                     b.HasDiscriminator().HasValue("ComplexDish");
                 });
 
             modelBuilder.Entity("MenuManager.DB.Models.Dish", b =>
                 {
                     b.HasBaseType("MenuManager.DB.Models.BaseMenuItem");
-
-                    b.Property<int?>("ComplexDishID")
-                        .HasColumnType("INTEGER");
-
-                    b.HasIndex("ComplexDishID");
 
                     b.HasDiscriminator().HasValue("Dish");
                 });
@@ -163,28 +182,19 @@ namespace MenuManager.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MenuManager.DB.Models.ComplexDish", b =>
+            modelBuilder.Entity("ComplexDishDish", b =>
                 {
-                    b.HasOne("MenuManager.DB.Models.BaseMenuItem", null)
-                        .WithMany("complexDishes")
-                        .HasForeignKey("BaseMenuItemID");
-                });
+                    b.HasOne("MenuManager.DB.Models.Dish", null)
+                        .WithMany()
+                        .HasForeignKey("DishListID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("MenuManager.DB.Models.Dish", b =>
-                {
                     b.HasOne("MenuManager.DB.Models.ComplexDish", null)
-                        .WithMany("DishList")
-                        .HasForeignKey("ComplexDishID");
-                });
-
-            modelBuilder.Entity("MenuManager.DB.Models.BaseMenuItem", b =>
-                {
-                    b.Navigation("complexDishes");
-                });
-
-            modelBuilder.Entity("MenuManager.DB.Models.ComplexDish", b =>
-                {
-                    b.Navigation("DishList");
+                        .WithMany()
+                        .HasForeignKey("complexDishesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

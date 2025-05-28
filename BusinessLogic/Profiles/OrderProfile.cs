@@ -13,10 +13,13 @@ namespace BusinessLogic.Profiles
     {
         public OrderProfile()
         {
-            CreateMap<OrderBusinessModel, Order>()
+            CreateMap<Order, OrderBusinessModel>()
             .ForMember(dest => dest.dishes, opt => opt.MapFrom(src => src.dishes))
-            .ForMember(dest => dest.TotalCost, opt => opt.MapFrom(src => src.TotalCost))
-            .ReverseMap();
+            .ForMember(dest => dest.TotalCost, opt => opt.MapFrom(src => src.TotalCost));
+            CreateMap<OrderBusinessModel, Order>()
+                .ForMember(dest => dest.TotalCost, opt => opt.MapFrom(src => src.TotalCost))
+                .ForMember(o => o.dishes, opt => opt.Ignore());
+            
         }
     }
 }

@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace MenuManager.Migrations
+namespace DomainData.Migrations
 {
     /// <inheritdoc />
-    public partial class postgres2 : Migration
+    public partial class newMigration2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,13 +18,8 @@ namespace MenuManager.Migrations
                 name: "FK_BaseMenuItemDailyMenu_DailyMenus_menusDayID",
                 table: "BaseMenuItemDailyMenu");
 
-            migrationBuilder.RenameColumn(
-                name: "ItemType",
-                table: "BaseMenuItem",
-                newName: "Discriminator");
-
             migrationBuilder.AddForeignKey(
-                name: "FK_BaseMenuItemDailyMenu_BaseMenuItem",
+                name: "FK_BaseMenuItemDailyMenu_BaseMenuItem_DishesID",
                 table: "BaseMenuItemDailyMenu",
                 column: "DishesID",
                 principalTable: "BaseMenuItem",
@@ -32,7 +27,7 @@ namespace MenuManager.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_BaseMenuItemDailyMenu_DailyMenu",
+                name: "FK_BaseMenuItemDailyMenu_DailyMenus_menusDayID",
                 table: "BaseMenuItemDailyMenu",
                 column: "menusDayID",
                 principalTable: "DailyMenus",
@@ -44,17 +39,12 @@ namespace MenuManager.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_BaseMenuItemDailyMenu_BaseMenuItem",
+                name: "FK_BaseMenuItemDailyMenu_BaseMenuItem_DishesID",
                 table: "BaseMenuItemDailyMenu");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_BaseMenuItemDailyMenu_DailyMenu",
+                name: "FK_BaseMenuItemDailyMenu_DailyMenus_menusDayID",
                 table: "BaseMenuItemDailyMenu");
-
-            migrationBuilder.RenameColumn(
-                name: "Discriminator",
-                table: "BaseMenuItem",
-                newName: "ItemType");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_BaseMenuItemDailyMenu_BaseMenuItem_DishesID",

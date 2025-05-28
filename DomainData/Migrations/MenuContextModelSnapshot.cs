@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MenuManager.Migrations
+namespace DomainData.Migrations
 {
     [DbContext(typeof(MenuContext))]
     partial class MenuContextModelSnapshot : ModelSnapshot
@@ -155,15 +155,13 @@ namespace MenuManager.Migrations
                         .WithMany()
                         .HasForeignKey("DishesID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_BaseMenuItemDailyMenu_BaseMenuItem");
+                        .IsRequired();
 
                     b.HasOne("MenuManager.DB.Models.DailyMenu", null)
                         .WithMany()
                         .HasForeignKey("menusDayID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_BaseMenuItemDailyMenu_DailyMenu");
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BaseMenuItemOrder", b =>

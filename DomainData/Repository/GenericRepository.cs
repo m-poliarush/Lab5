@@ -79,11 +79,9 @@ namespace DomainData.Repository
         public TModel GetTrackedOrAttach(int id, params Expression<Func<TModel, object>>[] includes)
         {
 
-            // Отримуємо ім’я ключової властивості
-            var keyPropertyName = GetKeyPropertyName(null); // null можна, бо метод не використовує сам об'єкт
+            var keyPropertyName = GetKeyPropertyName(null); 
             var keyProperty = typeof(TModel).GetProperty(keyPropertyName);
 
-            // Шукаємо відстежувану сутність з таким значенням ключа
             var trackedEntity = _context.ChangeTracker
                 .Entries<TModel>()
                 .FirstOrDefault(e =>
@@ -96,7 +94,6 @@ namespace DomainData.Repository
                 return trackedEntity.Entity;
             }
 
-            // Шукаємо сутність у базі даних
             var entity = GetById(id, includes);
 
             if (entity != null)
@@ -115,7 +112,7 @@ namespace DomainData.Repository
             {
                 return (int)property.GetValue(model);
             }
-            throw new InvalidOperationException("Entity does not have an integer ID property");
+            throw new InvalidOperationException();
         }
         private string GetKeyPropertyName(TModel model)
         {

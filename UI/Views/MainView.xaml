@@ -187,7 +187,7 @@
                FontFamily="Segoe UI Semibold"/>
 
             <!-- Список страв -->
-            <ListView ItemsSource="{Binding CurrentOrder.dishes}"
+            <ListView ItemsSource="{Binding OrderDishes}"
               BorderThickness="0"
               Background="Transparent"
               ScrollViewer.VerticalScrollBarVisibility="Auto">

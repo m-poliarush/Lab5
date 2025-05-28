@@ -14,10 +14,11 @@ namespace BusinessLogic.Models
 
         public int TotalCost { get; private set; }
 
-        private ObservableCollection<BaseMenuItemBusinessModel> _dishes = new();
-        public ObservableCollection<BaseMenuItemBusinessModel> dishes
+        private List<BaseMenuItemBusinessModel> _dishes = new();
+        public List<BaseMenuItemBusinessModel> dishes
         {
             get => _dishes;
+            set => _dishes = value;
         }
 
 

@@ -20,6 +20,7 @@ namespace Lab4.Helpers
                     case DishCategory.First: return "Перша страва";
                     case DishCategory.Side: return "Гарнір";
                     case DishCategory.Main: return "Основна страва";
+                    case DishCategory.Drink: return "Напій";
                     case DishCategory.Complex: return "Комплексне меню";
                     default: return category.ToString();
                 }

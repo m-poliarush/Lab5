@@ -38,6 +38,8 @@ namespace BusinessLogic.Services
             var originalDishlist = menu.Dishes;
             var menuEntity = _unitOfWork.MenusRepository.GetTrackedOrAttach(menu.DayID, m => m.Dishes);
             menuEntity.Dishes.Clear();
+            _unitOfWork.MenusRepository.Update(menuEntity);
+            _unitOfWork.Save();
             foreach (var dish in originalDishlist)
             {
                 if(dish is DishBusinessModel)
@@ -53,9 +55,9 @@ namespace BusinessLogic.Services
                 }
 
             }
-            
-
             _unitOfWork.MenusRepository.Update(menuEntity);
+
+            
             _unitOfWork.Save();
         }
         

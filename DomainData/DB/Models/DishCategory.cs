@@ -12,6 +12,7 @@ namespace MenuManager.DB.Models
         Main,
         First,
         Side,
+        Drink,
         Complex
     }
 }

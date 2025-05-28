@@ -5,10 +5,10 @@ namespace DomainData.UoW
 {
     public interface IUnitOfWork : IDisposable
     {
-        public GenericRepository<DailyMenu> MenusRepository { get; }
-        public GenericRepository<Dish> DishRepository { get; }
-        public GenericRepository<ComplexDish> ComplexDishRepository { get; }
-        public GenericRepository<Order> OrdersRepository { get; }
+        public IGenericRepository<DailyMenu> MenusRepository { get; }
+        public IGenericRepository<Dish> DishRepository { get; }
+        public IGenericRepository<ComplexDish> ComplexDishRepository { get; }
+        public IGenericRepository<Order> OrdersRepository { get; }
 
         public void Save();
     }
