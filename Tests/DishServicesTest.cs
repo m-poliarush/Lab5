@@ -51,7 +51,15 @@ namespace Tests
 
             Assert.Equal(2, result.Count);
             Assert.Equal(dishes[0].ID, result[0].ID);
+            Assert.Equal(dishes[0].Name, result[0].Name);
+            Assert.Equal(dishes[0].Description, result[0].Description);
+            Assert.Equal(dishes[0].Price, result[0].Price);
+            Assert.Equal(dishes[0].Category, result[0].Category);
             Assert.Equal(dishes[1].ID, result[1].ID);
+            Assert.Equal(dishes[1].Name, result[1].Name);
+            Assert.Equal(dishes[1].Description, result[1].Description);
+            Assert.Equal(dishes[1].Price, result[1].Price);
+            Assert.Equal(dishes[1].Category, result[1].Category);
         }
 
         [Fact]

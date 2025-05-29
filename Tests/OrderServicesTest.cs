@@ -43,7 +43,6 @@ public class OrderServiceTests
     [Fact]
     public void GetAllOrdersTest()
     {
-        // Arrange
         var dish = new Dish
         {
             ID = 1,
@@ -64,10 +63,9 @@ public class OrderServiceTests
         _mockOrderRepo.Setup(r => r.GetAll(It.IsAny<System.Linq.Expressions.Expression<System.Func<Order, object>>>()))
             .Returns(orders);
 
-        // Act
+
         var result = _orderService.GetAllOrders();
 
-        // Assert
         Assert.Single(result);
         Assert.Equal(1, result[0].OrderID);
         Assert.Single(result[0].dishes);
@@ -77,7 +75,7 @@ public class OrderServiceTests
     [Fact]
     public void CreateOrderTest()
     {
-        // Arrange
+
         var orderModel = new OrderBusinessModel();
         orderModel.AddDish(new DishBusinessModel
         {

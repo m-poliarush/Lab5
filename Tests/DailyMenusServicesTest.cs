@@ -42,7 +42,7 @@ public class DailyMenuServiceTests
     }
 
     [Fact]
-    public void GetAllMenus_ReturnsMappedMenus()
+    public void GetAllMenusTest()
     {
         var menus = new List<DailyMenu>
         {
@@ -73,7 +73,7 @@ public class DailyMenuServiceTests
     }
 
     [Fact]
-    public void UpdateMenu_UpdatesMenuAndSaves()
+    public void UpdateMenuTest()
     {
         var dishModel = new DishBusinessModel
         {
