@@ -13,6 +13,7 @@ namespace BusinessLogic.Profiles
     {
         public BaseMenuItemProfile()
         {
+            CreateMap<BaseMenuItemBusinessModel, Dish>().ReverseMap();
             CreateMap<BaseMenuItem, BaseMenuItemBusinessModel>()
             .Include<Dish, DishBusinessModel>()
             .Include<ComplexDish, ComplexDishBusinessModel>();
