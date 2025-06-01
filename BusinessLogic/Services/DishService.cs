@@ -96,6 +96,10 @@ namespace BusinessLogic.Services
             {
                 dish = _unitOfWork.ComplexDishRepository.GetById(id);
             }
+            if(dish == null)
+            {
+                throw new IndexOutOfRangeException("Wrong id");
+            }
 
             if (dish is ComplexDish)
             {
@@ -111,22 +115,31 @@ namespace BusinessLogic.Services
         }
         public void UpdateDish(BaseMenuItemBusinessModel dish)
         {
-
-            if (dish is DishBusinessModel)
+            BaseMenuItem entityToUpdate;
+            try
             {
-                
-                var entityToUpdate = _unitOfWork.DishRepository.GetTrackedOrAttach(dish.ID);
-                entityToUpdate = _mapper.Map<Dish>(dish);
-                _unitOfWork.DishRepository.Update(entityToUpdate);
+                entityToUpdate = _unitOfWork.DishRepository.GetTrackedOrAttach(dish.ID);
             }
-            else if (dish is ComplexDishBusinessModel cd)
+            catch (Exception ex) {
+                throw new IndexOutOfRangeException("Wrong id");
+            }
+            if (entityToUpdate != null && entityToUpdate is Dish dishEntity)
+            { 
+                dishEntity = _mapper.Map<Dish>(dish);
+                _unitOfWork.DishRepository.Update(dishEntity);
+            }
+            else if (entityToUpdate == null && dish is ComplexDishBusinessModel cd)
             {
                 var dishList = cd.DishList;
-                var entityToUpdate = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(cd.ID, cd => cd.DishList);
-                entityToUpdate = _mapper.Map<ComplexDish>(dish);
-                entityToUpdate.DishList = new();
-                ComplexDishMap(entityToUpdate, dishList);
-                _unitOfWork.ComplexDishRepository.Update(entityToUpdate);
+                entityToUpdate = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(cd.ID, cd => cd.DishList);
+                entityToUpdate = _mapper.Map<ComplexDish>(dish as ComplexDishBusinessModel);
+                var complexDish = entityToUpdate as ComplexDish;
+                if (complexDish != null)
+                {
+                    complexDish.DishList = new();
+                    ComplexDishMap(complexDish, dishList);
+                    _unitOfWork.ComplexDishRepository.Update(complexDish);
+                }
             }
             _unitOfWork.Save();
         }

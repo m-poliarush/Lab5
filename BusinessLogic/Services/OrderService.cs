@@ -41,16 +41,13 @@ namespace BusinessLogic.Services
             foreach (var dishModel in order.dishes)
             {
                 BaseMenuItem dishEntity;
+                dishEntity = _unitOfWork.DishRepository.GetTrackedOrAttach(dishModel.ID);
 
-                if (dishModel is DishBusinessModel)
-                {
-                    dishEntity = _unitOfWork.DishRepository.GetTrackedOrAttach(dishModel.ID);
-                }
-                else if (dishModel is ComplexDishBusinessModel)
+                if (dishEntity == null)
                 {
                     dishEntity = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(dishModel.ID);
                 }
-                else
+                else if(dishEntity == null)
                 {
                     continue;
                 }

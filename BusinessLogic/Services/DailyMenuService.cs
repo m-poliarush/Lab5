@@ -37,21 +37,31 @@ namespace BusinessLogic.Services
         {
             var originalDishlist = menu.Dishes;
             var menuEntity = _unitOfWork.MenusRepository.GetTrackedOrAttach(menu.DayID, m => m.Dishes);
+            if(menuEntity == null)
+            {
+                throw new IndexOutOfRangeException("Wrong day id");
+            }
+                
             menuEntity.Dishes.Clear();
             _unitOfWork.MenusRepository.Update(menuEntity);
             _unitOfWork.Save();
             foreach (var dish in originalDishlist)
             {
-                if(dish is DishBusinessModel)
+                BaseMenuItem dishEntity;
+                dishEntity = _unitOfWork.DishRepository.GetTrackedOrAttach(dish.ID);
+                if (dishEntity != null)
                 {
-                    var dishEntity = _unitOfWork.DishRepository.GetTrackedOrAttach(dish.ID);
-                    menuEntity.Dishes.Add(dishEntity);
+                     menuEntity.Dishes.Add(dishEntity);
                 }
-                else if(dish is ComplexDishBusinessModel cd)
+                else if(dishEntity == null)
                 {
-                    var complexDishEntity = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(cd.ID);
-                    menuEntity.Dishes.Add(complexDishEntity);
+                    dishEntity = _unitOfWork.ComplexDishRepository.GetTrackedOrAttach(dish.ID);
+                    menuEntity.Dishes.Add(dishEntity);
 
+                }
+                else
+                {
+                    throw new IndexOutOfRangeException("Wrong dish id");
                 }
 
             }
