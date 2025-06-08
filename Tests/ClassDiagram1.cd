@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Tests.DailyMenuServiceTests" Collapsed="true">
+    <Position X="6.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAIQAAAIAAAAAABAAIAAAAAEAQAAAAAAAAAAAA=</HashCode>
+      <FileName>DailyMenusServicesTest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tests.DishServicesTest" Collapsed="true">
+    <Position X="8.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACIAAgJAAACAAAAAAEAAAAABgEAAEAAAAAAAA=</HashCode>
+      <FileName>DishServicesTest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tests.OrderServiceTests" Collapsed="true">
+    <Position X="6.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAQAAAKAAAAAEBAAIAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>OrderServicesTest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MenuManager.DB.Models.BaseMenuItem" Collapsed="true">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAQAggAAQAAAAAAQAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>DB\Models\BaseMenuItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuManager.DB.Models.ComplexDish" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DB\Models\ComplexDish.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuManager.DB.Models.DailyMenu" Collapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAABAAAEAAAAAAA=</HashCode>
+      <FileName>DB\Models\DailyMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuManager.DB.Models.Dish" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DB\Models\Dish.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuManager.DB.Models.Order" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAJAAAAAABAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DB\Models\Order.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuManager.DB.MenuContext" Collapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAQBBAAAAAAQAAAAAEIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DB\MenuContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MenuManager.Repository.DailyMenusRepository.DailyMenusRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAICAIgAACAAAAgACAAAAAQAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\DailyMenusRepository\DailyMenusRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MenuManager.Repository.DishesRepository.DishesRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAICAIAEACAAAAQAIAAAAIAAAAAAADAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\DishesRepository\DishesRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MenuManager.Repository.OrdersRepository.OrdersRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQICAYEAACAAAAAAAAAAAAAAAAAEAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Repository\OrdersRepository\OrderRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="MenuManager.Repository.DailyMenusRepository.IDailyMenusRepository" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIgAAAAAAAgACAAAAAQAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\DailyMenusRepository\IDailyMenusRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MenuManager.Repository.DishesRepository.IDishesRepository" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAEAAAAAAQAIAAAAIAAAAAAADAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repository\DishesRepository\IDishesRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MenuManager.Repository.OrdersRepository.IOrdersRepository" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAYEAAAAAAAAAAAAAAAAAAAAEAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Repository\OrdersRepository\IOrdersRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="MenuManager.DB.Models.DishCategory" Collapsed="true">
+    <Position X="9.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAgAgQAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>DB\Models\DishCategory.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

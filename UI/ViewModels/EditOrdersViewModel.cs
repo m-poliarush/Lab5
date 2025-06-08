@@ -13,7 +13,7 @@ using MenuManager.Repository.OrdersRepository;
 
 namespace Lab4.ViewModels
 {
-    public class EditOrdersViewModel
+    public class EditOrdersViewModel : BaseViewModel
     {
         private readonly IOrderService _orderService; 
         public List<OrderBusinessModel> Orders { get; }

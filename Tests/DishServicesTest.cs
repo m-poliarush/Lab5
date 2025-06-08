@@ -208,11 +208,11 @@ namespace Tests
             It.IsAny<Expression<Func<Dish, object>>[]>()))
                     .Returns<int, Expression<Func<Dish, object>>[]>((id, _) => new Dish
                     {
-                            ID = id,
-                            Name = $"Dish{id}",
-                            Description = $"Desc{id}",
-                            Price = id * 100,
-                            Category = DishCategory.Side
+                        ID = id,
+                        Name = $"Dish{id}",
+                        Description = $"Desc{id}",
+                        Price = id * 100,
+                        Category = DishCategory.Side
                     });
 
             _dishService.ComplexDishMap(complexDishEntity, dishList);
